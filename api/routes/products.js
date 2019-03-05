@@ -16,13 +16,13 @@ router.get('/:productId', (req, res, next) => {
         });
 });
 router.get('/', (req, res, next) => {
-    Product.find().exec().then(docs => {
+    Product.find().select('name price _id').exec().then(docs => {
         const response = {
             count: docs.length,
             product: docs.map(doc => {
                 return {
                     request: ' GET',
-                    url: 'https://my-node-server-one.herokuapp.com/products '+doc._id
+                    url: 'https://my-node-server-one.herokuapp.com/products/' + doc._id
                 }
             })
         }
@@ -48,7 +48,11 @@ router.post('/', (req, res, next) => {
                 createdProduct: product
             });
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+            console.error(err); res.status(422).json({
+                message: err.message
+            });
+        });
 });
 
 router.patch('/:id', (req, res, next) => {
@@ -67,7 +71,13 @@ router.patch('/:id', (req, res, next) => {
 router.delete('/:id', (req, res, next) => {
     const id = req.params.id;
     Product.remove({ _id: id }).exec()
-        .then(result => { res.status(200).json(result); })
+        .then(result => {
+            const response = {
+                id: id,
+                message: 'Item Deleted for this Id'
+            }
+            res.status(200).json(response);
+        })
         .catch(err => { res.status(200).json(err) })
 });
 module.exports = router;
