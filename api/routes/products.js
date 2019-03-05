@@ -22,7 +22,7 @@ router.get('/', (req, res, next) => {
             product: docs.map(doc => {
                 return {
                     request: ' GET',
-                    url: 'https://my-node-server-one.herokuapp.com/products ' + doc._id
+                    url: 'https://my-node-server-one.herokuapp.com/products '+doc._id
                 }
             })
         }
