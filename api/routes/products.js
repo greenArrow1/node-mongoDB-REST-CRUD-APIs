@@ -16,9 +16,17 @@ router.get('/:productId', (req, res, next) => {
         });
 });
 router.get('/', (req, res, next) => {
-    Product.find().exec().then(doc => {
-        console.log(doc);
-        res.status(200).json(doc);
+    Product.find().exec().then(docs => {
+        const response = {
+            count: docs.length,
+            product: docs.map(doc => {
+                return {
+                    request: ' GET',
+                    url: 'https://my-node-server-one.herokuapp.com/products ' + doc._id
+                }
+            })
+        }
+        res.status(200).json(response);
     })
         .catch(err => {
             console.log(err)
