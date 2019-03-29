@@ -5,12 +5,14 @@ const bodyParser = require('body-parser');
 const productsRouter = require('./api/routes/products');
 const ordersRouter = require('./api/routes/orders');
 const mongoose = require('mongoose');
+const path=require('path');
 
 mongoose.connect('mongodb://Chittrang:Mongo%401234@initialcluster-shard-00-00-2eszi.mongodb.net:27017,initialcluster-shard-00-01-2eszi.mongodb.net:27017,initialcluster-shard-00-02-2eszi.mongodb.net:27017/test?ssl=true&replicaSet=InitialCluster-shard-0&authSource=admin&retryWrites=true',
 { useNewUrlParser: true })
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname,'dist')));
 app.use((req, res, next)=>{
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
@@ -37,5 +39,7 @@ app.use((error, req, res, next)=> {
         }
     })
 });
-
+app.get('*',(req,res)=>{
+    res.sendFile(path.join(__dirname,'dist/index.html'));
+});
 module.exports = app;
